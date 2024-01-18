@@ -27,7 +27,7 @@ namespace MQS.Infrastructure.Utilities
                 Task.Delay(TimeSpan.FromSeconds(2)).Wait();
                 var body = args.Body.ToArray();
                 string message = Encoding.UTF8.GetString(body);
-                LogMessages.AddMessage($"{prefix}. Received Message: {message}");
+                LogMessages.AddMessage($"{prefix}. Received Message: { message }");
                 channel.BasicAck(args.DeliveryTag, false);
             };
 
@@ -44,7 +44,7 @@ namespace MQS.Infrastructure.Utilities
                 Task.Delay(TimeSpan.FromSeconds(1)).Wait();
                 var body = args.Body.ToArray();
                 string message = Encoding.UTF8.GetString(body);
-                LogMessages.AddMessage($"C1C{sharedConsumerNumber}. Received Message: {message}");
+                LogMessages.AddMessage($"📦🛍️ Order has been received on channel 1, consumer {sharedConsumerNumber}. Received Message: {message}");
                 orderChannel.BasicAck(args.DeliveryTag, false);
             };
 
@@ -54,7 +54,7 @@ namespace MQS.Infrastructure.Utilities
                 Task.Delay(TimeSpan.FromSeconds(1)).Wait();
                 var body = args.Body.ToArray();
                 string message = Encoding.UTF8.GetString(body);
-                LogMessages.AddMessage($"C2C{sharedConsumerNumber}. Received Message: {message}");
+                LogMessages.AddMessage($"📦🛍️ Order has been received on channel 2 consumer {sharedConsumerNumber}. Received Message: {message}");
                 inventoryChannel.BasicAck(args.DeliveryTag, false);
             };
 
