@@ -87,7 +87,8 @@ namespace MQS.Infrastructure.Services
                     {
                         while (true)
                         {
-                            string inventoryMessage = $"✅🛒 New order placed on channel 2, publisher 1. Order No. #{inventoryNumber}";
+                            string inventoryMessage = $"✅🛒 A request for a change in the inventory update has been " +
+                            $"submitted on channel 2, publisher 1. Request No. #{inventoryNumber}";
                             _messageQueueUtility.SendMessage(inventoryChannel, inventoryExchangeName, inventoryRoutingKey1,
                                 inventoryMessage);
                             LogMessages.AddMessage($"{inventoryMessage}");
@@ -100,7 +101,8 @@ namespace MQS.Infrastructure.Services
                     {
                         while (true)
                         {
-                            string inventoryMessage = $"✅🛒 New order placed on channel 2, publisher 2. Order No. #{inventoryNumber}";
+                            string inventoryMessage = $"✅🛒 A request for a change in the inventory update has been " +
+                            $"submitted on channel 2, publisher 2. Request No. #{inventoryNumber}";
                             _messageQueueUtility.SendMessage(inventoryChannel, inventoryExchangeName, inventoryRoutingKey2,
                                 inventoryMessage);
                             LogMessages.AddMessage($"{inventoryMessage}");
@@ -112,25 +114,25 @@ namespace MQS.Infrastructure.Services
                     Task.Run(() =>
                     {
                         _messageQueueUtility.ConsumeMessages(orderChannel, orderQueueName1,
-                            "📦 Order has been received on channel 1, consumer 1");
+                            "🛍️ Order has been received on channel 1, consumer 1");
                     });
 
                     Task.Run(() =>
                     {
                         _messageQueueUtility.ConsumeMessages(orderChannel, orderQueueName2,
-                            "📦 Order has been received on channel 1, consumer 2");
+                            "🛍️ Order has been received on channel 1, consumer 2");
                     });
 
                     Task.Run(() =>
                     {
                         _messageQueueUtility.ConsumeMessages(inventoryChannel, inventoryQueueName1,
-                            "📦 Order has been received on channel 2, consumer 1");
+                            "🛍️ Order has been received on channel 2, consumer 1");
                     });
 
                     Task.Run(() =>
                     {
                         _messageQueueUtility.ConsumeMessages(inventoryChannel, inventoryQueueName2,
-                            "📦 Order has been received on channel 2, consumer 2");
+                            "🛍️ Inventory update message has been received on channel 2, consumer 2");
                     });
 
                     Task.Run(() =>
