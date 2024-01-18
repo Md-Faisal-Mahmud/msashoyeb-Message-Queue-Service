@@ -26,5 +26,13 @@ namespace MQS.Infrastructure.Data
                 return messages.ToList();
             }
         }
+
+        public static void ClearAllMessages()
+        {
+            lock (lockObject)
+            {
+                messages.Clear();
+            }
+        }
     }
 }
