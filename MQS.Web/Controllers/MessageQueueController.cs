@@ -31,10 +31,16 @@ namespace MQS.Web.Controllers
             return RedirectToAction("Dashboard");
         }
 
-        public ActionResult GetLogMessages()
+        public ActionResult GetMessages()
         {
             var logMessages = LogMessages.GetMessages();
             return PartialView("_LogMessagesPartial", logMessages);
+        }
+
+        public ActionResult ClearAllMessages()
+        {
+            LogMessages.ClearAllMessages();
+            return RedirectToAction("Dashboard");
         }
     }
 }
