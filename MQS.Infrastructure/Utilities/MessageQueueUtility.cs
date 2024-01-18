@@ -19,7 +19,7 @@ namespace MQS.Infrastructure.Utilities
             LogMessages.AddMessage($"{message}");
         }
 
-        public void ConsumeMessages(IModel channel, string queueName, string prefix)
+        public void ConsumeMessages(IModel channel, string queueName, string prefixMessage)
         {
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (sender, args) =>
@@ -27,7 +27,7 @@ namespace MQS.Infrastructure.Utilities
                 Task.Delay(TimeSpan.FromSeconds(2)).Wait();
                 var body = args.Body.ToArray();
                 string message = Encoding.UTF8.GetString(body);
-                LogMessages.AddMessage($"{prefix}. Received Message: { message }");
+                LogMessages.AddMessage($"{prefixMessage}. Received Message: {message}");
                 channel.BasicAck(args.DeliveryTag, false);
             };
 
@@ -39,23 +39,50 @@ namespace MQS.Infrastructure.Utilities
             string inventoryQueue, int sharedConsumerNumber)
         {
             var orderConsumer = new EventingBasicConsumer(orderChannel);
+            var inventoryConsumer = new EventingBasicConsumer(inventoryChannel);
+
+            int orderMessageCount = GetMessageCount(orderChannel, orderQueue);
+            int inventoryMessageCount = GetMessageCount(inventoryChannel, inventoryQueue);
+
             orderConsumer.Received += (sender, args) =>
             {
                 Task.Delay(TimeSpan.FromSeconds(1)).Wait();
                 var body = args.Body.ToArray();
                 string message = Encoding.UTF8.GetString(body);
-                LogMessages.AddMessage($"📦🛍️ Order has been received on channel 1, consumer {sharedConsumerNumber}. Received Message: {message}");
-                orderChannel.BasicAck(args.DeliveryTag, false);
+
+                if (orderMessageCount >= inventoryMessageCount)
+                {
+                    LogMessages.AddMessage($"📦🛍️ Order has been received on shared consumer. Received Message: {message}");
+                    orderChannel.BasicAck(args.DeliveryTag, false);
+                }
+                else
+                {
+                    orderChannel.BasicNack(args.DeliveryTag, false, true);
+                }
+
+                orderMessageCount = GetMessageCount(orderChannel, orderQueue);
+                inventoryMessageCount = GetMessageCount(inventoryChannel, inventoryQueue);
             };
 
-            var inventoryConsumer = new EventingBasicConsumer(inventoryChannel);
             inventoryConsumer.Received += (sender, args) =>
             {
                 Task.Delay(TimeSpan.FromSeconds(1)).Wait();
                 var body = args.Body.ToArray();
                 string message = Encoding.UTF8.GetString(body);
-                LogMessages.AddMessage($"📦🛍️ Order has been received on channel 2 consumer {sharedConsumerNumber}. Received Message: {message}");
-                inventoryChannel.BasicAck(args.DeliveryTag, false);
+
+                if (inventoryMessageCount > orderMessageCount)
+                {
+                    LogMessages.AddMessage($"📦🛍️ Inventory update message has been received on shared " +
+                        $"consumer {sharedConsumerNumber}. Received Message: {message}");
+                    inventoryChannel.BasicAck(args.DeliveryTag, false);
+                }
+                else
+                {
+                    inventoryChannel.BasicNack(args.DeliveryTag, false, true);
+                }
+
+                orderMessageCount = GetMessageCount(orderChannel, orderQueue);
+                inventoryMessageCount = GetMessageCount(inventoryChannel, inventoryQueue);
             };
 
             orderChannel.BasicQos(0, 1, false);
@@ -63,6 +90,19 @@ namespace MQS.Infrastructure.Utilities
 
             orderChannel.BasicConsume(orderQueue, false, orderConsumer);
             inventoryChannel.BasicConsume(inventoryQueue, false, inventoryConsumer);
+        }
+
+        public int GetMessageCount(IModel channel, string queueName)
+        {
+            try
+            {
+                var queueDeclare = channel.QueueDeclarePassive(queueName);
+                return (int)queueDeclare.MessageCount;
+            }
+            catch (RabbitMQ.Client.Exceptions.OperationInterruptedException ex)
+            {
+                return 0;
+            }
         }
     }
 }
