@@ -17,14 +17,12 @@ namespace MQS.Web.Controllers
         //        _messageQueueService = messageQueueService;
         //    }
 
-        [HttpGet]
         public ActionResult Dashboard()
         {
             ViewBag.LogMessages = LogMessages.GetMessages();
             return View();
         }
 
-        [HttpPost]
         public ActionResult StartQueueProcessing()
         {
             Task.Run(() => _messageQueueService.ProcessMessages());
