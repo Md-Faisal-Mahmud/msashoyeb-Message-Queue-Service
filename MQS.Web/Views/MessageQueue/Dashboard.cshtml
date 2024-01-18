@@ -1,7 +1,39 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Dashboard";
 }
 
-<h2>Dashboard</h2>
+<h2>Message Queue Dashboard</h2>
 
+<div>
+    <button id="startProcessingBtn">Start Queue Processing</button>
+</div>
+@section styles{
+    <style>
+        #logContainer {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+}
+
+<div id="logContainer">
+    <div id="logList">
+        @Html.Partial("_LogMessagesPartial", (List<string>)ViewBag.LogMessages)
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function updateLog() {
+            $.get('@Url.Action("GetLogMessages", "MessageQueue")', function (data) {
+                $('#logList').html(data);
+            });
+        }
+
+        $('#startProcessingBtn').click(function () {
+            $.post('@Url.Action("StartQueueProcessing", "MessageQueue")', function () {
+                setInterval(updateLog, 1000);
+            });
+        });
+    </script>
+}
