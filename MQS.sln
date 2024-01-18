@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQS.Application", "MQS.Appl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQS.Web", "MQS.Web\MQS.Web.csproj", "{54BE9276-6F1E-48BC-BE9A-804424004CF6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQS.Domain", "MQS.Domain\MQS.Domain.csproj", "{450948C7-C400-45D0-9FEC-E7E69D05D757}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{54BE9276-6F1E-48BC-BE9A-804424004CF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54BE9276-6F1E-48BC-BE9A-804424004CF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54BE9276-6F1E-48BC-BE9A-804424004CF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{450948C7-C400-45D0-9FEC-E7E69D05D757}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{450948C7-C400-45D0-9FEC-E7E69D05D757}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{450948C7-C400-45D0-9FEC-E7E69D05D757}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{450948C7-C400-45D0-9FEC-E7E69D05D757}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
