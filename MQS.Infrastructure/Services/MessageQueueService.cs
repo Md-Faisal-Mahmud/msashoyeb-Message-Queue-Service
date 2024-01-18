@@ -1,12 +1,8 @@
 ﻿using MQS.Application.Services;
-using MQS.Application.Utilities;
 using MQS.Infrastructure.Data;
 using MQS.Infrastructure.Utilities;
 using RabbitMQ.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,7 +27,7 @@ namespace MQS.Infrastructure.Services
             var factory = new ConnectionFactory
             {
                 Uri = new Uri("amqp://guest:guest@localhost:5672"),
-                ClientProvidedName = "Render App"
+                ClientProvidedName = "Shop Management App"
             };
 
             using (var connection = factory.CreateConnection())
@@ -67,9 +63,9 @@ namespace MQS.Infrastructure.Services
                     {
                         while (true)
                         {
-                            string orderMessage = $"C1P1. Order #{orderNumber}";
+                            string orderMessage = $"✅🛒 New order placed on channel 1, publisher 1. Order No. #{orderNumber}";
                             _messageQueueUtility.SendMessage(orderChannel, orderExchangeName, orderRoutingKey1, orderMessage);
-                            LogMessages.AddMessage($"Sent: {orderMessage}");
+                            LogMessages.AddMessage($"{orderMessage}");
                             orderNumber++;
                             Thread.Sleep(2000);
                         }
@@ -79,9 +75,9 @@ namespace MQS.Infrastructure.Services
                     {
                         while (true)
                         {
-                            string orderMessage = $"C1P2. Order #{orderNumber}";
+                            string orderMessage = $"✅🛒 New order placed on channel 1, publisher 2. Order No. #{orderNumber}";
                             _messageQueueUtility.SendMessage(orderChannel, orderExchangeName, orderRoutingKey2, orderMessage);
-                            LogMessages.AddMessage($"Sent: {orderMessage}");
+                            LogMessages.AddMessage($"{orderMessage}");
                             orderNumber++;
                             Thread.Sleep(3000);
                         }
@@ -91,10 +87,10 @@ namespace MQS.Infrastructure.Services
                     {
                         while (true)
                         {
-                            string inventoryMessage = $"C2P1. Order #{inventoryNumber}";
+                            string inventoryMessage = $"✅🛒 New order placed on channel 2, publisher 1. Order No. #{inventoryNumber}";
                             _messageQueueUtility.SendMessage(inventoryChannel, inventoryExchangeName, inventoryRoutingKey1,
                                 inventoryMessage);
-                            LogMessages.AddMessage($"Sent: {inventoryMessage}");
+                            LogMessages.AddMessage($"{inventoryMessage}");
                             inventoryNumber++;
                             Thread.Sleep(4000);
                         }
@@ -104,10 +100,10 @@ namespace MQS.Infrastructure.Services
                     {
                         while (true)
                         {
-                            string inventoryMessage = $"C2P2. Order #{inventoryNumber}";
+                            string inventoryMessage = $"✅🛒 New order placed on channel 2, publisher 2. Order No. #{inventoryNumber}";
                             _messageQueueUtility.SendMessage(inventoryChannel, inventoryExchangeName, inventoryRoutingKey2,
                                 inventoryMessage);
-                            LogMessages.AddMessage($"Sent: {inventoryMessage}");
+                            LogMessages.AddMessage($"{inventoryMessage}");
                             inventoryNumber++;
                             Thread.Sleep(5000);
                         }
@@ -115,22 +111,32 @@ namespace MQS.Infrastructure.Services
 
                     Task.Run(() =>
                     {
-                        _messageQueueUtility.ConsumeMessages(orderChannel, orderQueueName1, "C1C1");
+                        _messageQueueUtility.ConsumeMessages(orderChannel, orderQueueName1,
+                            "📦 Order has been received on channel 1, consumer 1");
                     });
 
                     Task.Run(() =>
                     {
-                        _messageQueueUtility.ConsumeMessages(orderChannel, orderQueueName2, "C1C2");
+                        _messageQueueUtility.ConsumeMessages(orderChannel, orderQueueName2,
+                            "📦 Order has been received on channel 1, consumer 2");
                     });
 
                     Task.Run(() =>
                     {
-                        _messageQueueUtility.ConsumeMessages(inventoryChannel, inventoryQueueName1, "C2C1");
+                        _messageQueueUtility.ConsumeMessages(inventoryChannel, inventoryQueueName1,
+                            "📦 Order has been received on channel 2, consumer 1");
                     });
 
                     Task.Run(() =>
                     {
-                        _messageQueueUtility.ConsumeMessages(inventoryChannel, inventoryQueueName2, "C2C2");
+                        _messageQueueUtility.ConsumeMessages(inventoryChannel, inventoryQueueName2,
+                            "📦 Order has been received on channel 2, consumer 2");
+                    });
+
+                    Task.Run(() =>
+                    {
+                        _messageQueueUtility.SharedConsumeMessages(orderChannel, orderQueueName1, inventoryChannel,
+                            inventoryQueueName1, 1);
                     });
 
                     Task.Run(() =>
