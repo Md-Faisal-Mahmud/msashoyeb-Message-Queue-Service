@@ -6,13 +6,27 @@
 
 <div>
     <button id="startProcessingBtn">Start Queue Processing</button>
+    <button id="clearMessagesBtn">Clear Messages</button>
+    <hr />
 </div>
 @section styles{
     <style>
         #logContainer {
-            max-height: 300px;
+            max-height: 500px;
             overflow-y: auto;
+            border: 2px solid #dddddd;
         }
+
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .log-table th, .log-table td {
+                border: 2px solid #dddddd;
+                padding: 8px;
+                text-align: left;
+            }
     </style>
 }
 
@@ -25,13 +39,21 @@
 @section scripts {
     <script>
         function updateLog() {
-            $.get('@Url.Action("GetLogMessages", "MessageQueue")', function (data) {
+            $.get('@Url.Action("GetMessages", "MessageQueue")', function (data) {
                 $('#logList').html(data);
             });
         }
 
         $('#startProcessingBtn').click(function () {
+            $(this).prop('disabled', true);
+
             $.post('@Url.Action("StartQueueProcessing", "MessageQueue")', function () {
+                setInterval(updateLog, 1000);
+            });
+        });
+
+        $('#clearMessagesBtn').click(function () {
+            $.post('@Url.Action("ClearAllMessages", "MessageQueue")', function () {
                 setInterval(updateLog, 1000);
             });
         });
