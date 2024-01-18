@@ -1,0 +1,17 @@
+﻿@model List<string>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Log Messages</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var message in Model)
+        {
+            <tr>
+                <td>@message</td>
+            </tr>
+        }
+    </tbody>
+</table>
