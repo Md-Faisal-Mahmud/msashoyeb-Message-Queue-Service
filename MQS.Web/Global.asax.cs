@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MQS.Web.App_Start;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +13,7 @@ namespace MQS.Web
     {
         protected void Application_Start()
         {
+            DependencyResolver.SetResolver(new NinjectResolver());
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
