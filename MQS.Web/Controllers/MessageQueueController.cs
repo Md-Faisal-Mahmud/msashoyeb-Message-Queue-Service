@@ -1,7 +1,9 @@
-﻿using Microsoft.Ajax.Utilities;
+﻿using log4net;
+using Microsoft.Ajax.Utilities;
 using MQS.Application.Services;
 using MQS.Infrastructure.Data;
 using MQS.Infrastructure.Services;
+using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -10,6 +12,7 @@ namespace MQS.Web.Controllers
     public class MessageQueueController : Controller
     {
         private readonly IMessageQueueService _messageQueueService;
+        private readonly ILog _logger = LogManager.GetLogger(typeof(MessageQueueController));
         public MessageQueueController() { }
         public MessageQueueController(IMessageQueueService messageQueueService)
         {
@@ -18,26 +21,58 @@ namespace MQS.Web.Controllers
 
         public ActionResult Dashboard()
         {
-            ViewBag.LogMessages = LogMessages.GetMessages();
-            return View();
+            try
+            {
+                ViewBag.LogMessages = LogMessages.GetMessages();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                return View("Error");
+            }
         }
 
         public ActionResult StartQueueProcessing()
         {
-            Task.Run(() => _messageQueueService.ProcessMessages());
-            return RedirectToAction("Dashboard");
+            try
+            {
+                Task.Run(() => _messageQueueService.ProcessMessages());
+                return RedirectToAction("Dashboard");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                return View("Error");
+            }
         }
 
         public ActionResult GetMessages()
         {
-            var logMessages = LogMessages.GetMessages();
-            return PartialView("_LogMessagesPartial", logMessages);
+            try
+            {
+                var logMessages = LogMessages.GetMessages();
+                return PartialView("_LogMessagesPartial", logMessages);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                return View("Error");
+            }
         }
 
         public ActionResult ClearAllMessages()
         {
-            LogMessages.ClearAllMessages();
-            return RedirectToAction("Dashboard");
+            try
+            {
+                LogMessages.ClearAllMessages();
+                return RedirectToAction("Dashboard");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                return View("Error");
+            }
         }
     }
 }

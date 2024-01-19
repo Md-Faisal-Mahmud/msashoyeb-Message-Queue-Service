@@ -1,4 +1,5 @@
-﻿using MQS.Application.Utilities;
+﻿using log4net;
+using MQS.Application.Utilities;
 using MQS.Infrastructure.Data;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -12,6 +13,7 @@ namespace MQS.Infrastructure.Utilities
 {
     public class MessageQueueUtility : IMessageQueueUtility
     {
+        private readonly ILog _logger = LogManager.GetLogger(typeof(MessageQueueUtility));
         public void SendMessage(IModel channel, string exchange, string routingKey, string message)
         {
             byte[] messageBodyBytes = Encoding.UTF8.GetBytes(message);
@@ -101,6 +103,7 @@ namespace MQS.Infrastructure.Utilities
             }
             catch (RabbitMQ.Client.Exceptions.OperationInterruptedException ex)
             {
+                _logger.Error("Error: ", ex);
                 return 0;
             }
         }
