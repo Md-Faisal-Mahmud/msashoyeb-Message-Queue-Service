@@ -82,3 +82,12 @@ The system utilizes RabbitMQ as the message broker. Ensure RabbitMQ is installed
 - Diagrams illustrating the flow of messages within each channel.
 
 ![Screenshot 2024-01-18 234620](https://github.com/msashoyeb/Message-Queue-Service/assets/53036465/b373e7e9-5416-4e1a-a10f-0b5a3358239f)
+
+- Display an image while the application is running (✅🛒 while the publisher works, 🛍️ while the consumer works, 📦🛍️ where the shared consumer works).
+
+![image](https://github.com/msashoyeb/Message-Queue-Service/assets/53036465/4c43f41b-d513-4789-9a9f-79e2bad5a5ab)
+
+## Presentation
+
+View the [PDF](/docs/Message%20Queuee%20Service.pdf).
+
