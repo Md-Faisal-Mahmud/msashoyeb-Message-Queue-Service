@@ -1,4 +1,5 @@
 ﻿using MQS.Application.Services;
+using MQS.Application.Utilities;
 using MQS.Infrastructure.Data;
 using MQS.Infrastructure.Utilities;
 using RabbitMQ.Client;
@@ -10,17 +11,16 @@ namespace MQS.Infrastructure.Services
 {
     public class MessageQueueService : IMessageQueueService
     {
-        private static int orderNumber = 1;
-        private static int inventoryNumber = 1;
-        MessageQueueUtility _messageQueueUtility = new MessageQueueUtility();
-        //private readonly IMessageQueueUtility _messageQueueUtility;
+        private int orderNumber = 1;
+        private int inventoryNumber = 1;
+        private readonly IMessageQueueUtility _messageQueueUtility;
 
-        //public MessageQueueService() { }
+        public MessageQueueService() { }
 
-        //public MessageQueueService(IMessageQueueUtility messageQueueUtility)
-        //{
-        //    _messageQueueUtility = messageQueueUtility;
-        //}
+        public MessageQueueService(IMessageQueueUtility messageQueueUtility)
+        {
+            _messageQueueUtility = messageQueueUtility;
+        }
 
         public void ProcessMessages()
         {

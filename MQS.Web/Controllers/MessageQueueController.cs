@@ -9,13 +9,12 @@ namespace MQS.Web.Controllers
 {
     public class MessageQueueController : Controller
     {
-        MessageQueueService _messageQueueService = new MessageQueueService();
-        //    private readonly IMessageQueueService _messageQueueService;
-        //    public MessageQueueController() { }
-        //    public MessageQueueController(IMessageQueueService messageQueueService)
-        //    {
-        //        _messageQueueService = messageQueueService;
-        //    }
+        private readonly IMessageQueueService _messageQueueService;
+        public MessageQueueController() { }
+        public MessageQueueController(IMessageQueueService messageQueueService)
+        {
+            _messageQueueService = messageQueueService;
+        }
 
         public ActionResult Dashboard()
         {
